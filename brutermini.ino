@@ -2,7 +2,7 @@
 #include "wrench.h"
 #include <string.h>
 #include <stdio.h>
-#include "SSD1306Wire.h" // legacy include: `#include "SSD1306.h"`
+#include "SSD1306Wire.h" // legacy include: `#include "oled.h"`
 
 #define BUZZER D3
 
@@ -20,8 +20,9 @@ SSD1306Wire display(0x3c, D5, D6);
 
 
 //------------------------------------------------------------------------------
-void ino_delay( WRContext* c, const WRValue* argv, const int argn, WRValue& retVal, void* usr )
+void ino_delay( WRValue* stackTop, const int argn, WRContext* c )
 {
+	WRValue* argv = stackTop - argn;
 	if( argn == 1)
 	{
 		delay( argv[0].asInt() );
@@ -29,8 +30,9 @@ void ino_delay( WRContext* c, const WRValue* argv, const int argn, WRValue& retV
 }
 
 //------------------------------------------------------------------------------
-void ino_pinMode( WRContext* c, const WRValue* argv, const int argn, WRValue& retVal, void* usr )
+void ino_pinMode( WRValue* stackTop, const int argn, WRContext* c )
 {
+	WRValue* argv = stackTop - argn;
 	if( argn == 2)
 	{
 		pinMode(argv[0].asInt(), argv[1].asInt());
@@ -38,34 +40,38 @@ void ino_pinMode( WRContext* c, const WRValue* argv, const int argn, WRValue& re
 }
 
 //------------------------------------------------------------------------------
-void ino_digitalWrite( WRContext* c, const WRValue* argv, const int argn, WRValue& retVal, void* usr )
+void ino_digitalWrite( WRValue* stackTop, const int argn, WRContext* c )
 {
+	WRValue* argv = stackTop - argn;
 	if( argn == 2)
 	{
 		digitalWrite(argv[0].asInt(), argv[1].asInt());
 	}
 }
 
-void ino_digitalRead( WRContext* c, const WRValue* argv, const int argn, WRValue& retVal, void* usr )
+void ino_digitalRead( WRValue* stackTop, const int argn, WRContext* c )
 {
+	WRValue* argv = stackTop - argn;
 	if( argn == 1)
 	{
-		wr_makeInt( &retVal, digitalRead( argv[0].asInt() ));
+		wr_makeInt( stackTop, digitalRead( argv[0].asInt() ));
 	}
 }
 
 //------------------------------------------------------------------------------
-void ino_analogRead( WRContext* c, const WRValue* argv, const int argn, WRValue& retVal, void* usr )
+void ino_analogRead( WRValue* stackTop, const int argn, WRContext* c )
 {
+	WRValue* argv = stackTop - argn;
 	if ( argn == 1)
 	{
 		// return the value
-		wr_makeInt( &retVal, analogRead( argv[0].asInt() ));
+		wr_makeInt( stackTop, analogRead( argv[0].asInt() ));
 	}
 }
 
-void ino_tone( WRContext* c, const WRValue* argv, const int argn, WRValue& retVal, void* usr )
+void ino_tone( WRValue* stackTop, const int argn, WRContext* c )
 {
+	WRValue* argv = stackTop - argn;
 	if( argn == 2)
 	{
 		tone(argv[0].asInt(), argv[1].asInt());
@@ -73,17 +79,21 @@ void ino_tone( WRContext* c, const WRValue* argv, const int argn, WRValue& retVa
 }
 
 //------------------------------------------------------------------------------
-/*void wr_allocateBuffer(WRContext* c, const WRValue* argv, const int argn, WRValue& retVal, void* usr) {
-    if (argn == 0) {
+/*void wr_allocateBuffer(WRContext* c, const WRValue* argv, const int argn, WRValue& retVal, void* usr)
+{
+    if (argn == 0)
+{
         wr_makeInt(&retVal, display.allocateBuffer());
     }
 }*/
 
 //------------------------------------------------------------------------------
-void wr_init(WRContext* c, const WRValue* argv, const int argn, WRValue& retVal, void* usr) {
+void wr_init( WRValue* stackTop, const int argn, WRContext* c )
+{
+	WRValue* argv = stackTop - argn;
     if (argn == 0) 
 	{
-        wr_makeInt(&retVal, display.init());
+        wr_makeInt(stackTop, display.init());
 		display.setFont(Font6x8);
 		display.setContrast(255);
 		display.flipScreenVertically();
@@ -91,110 +101,157 @@ void wr_init(WRContext* c, const WRValue* argv, const int argn, WRValue& retVal,
 }
 
 //------------------------------------------------------------------------------
-void wr_end(WRContext* c, const WRValue* argv, const int argn, WRValue& retVal, void* usr) {
-    if (argn == 0) {
+void wr_end( WRValue* stackTop, const int argn, WRContext* c )
+{
+	WRValue* argv = stackTop - argn;
+    
+	if (argn == 0) 
+	{
         display.end();
     }
 }
 
 //------------------------------------------------------------------------------
-void wr_resetDisplay(WRContext* c, const WRValue* argv, const int argn, WRValue& retVal, void* usr) {
-    if (argn == 0) {
+void wr_resetDisplay( WRValue* stackTop, const int argn, WRContext* c )
+{
+	WRValue* argv = stackTop - argn;	if (argn == 0) 
+	{
         display.resetDisplay();
     }
 }
 
 //------------------------------------------------------------------------------
-void wr_setPixel(WRContext* c, const WRValue* argv, const int argn, WRValue& retVal, void* usr) {
-    if (argn == 2) {
+void wr_setPixel( WRValue* stackTop, const int argn, WRContext* c )
+{
+	WRValue* argv = stackTop - argn;
+    if (argn == 2) 
+	{
         display.setPixel(argv[0].asInt(), argv[1].asInt());
     }
 }
 
 //------------------------------------------------------------------------------
-void wr_clearPixel(WRContext* c, const WRValue* argv, const int argn, WRValue& retVal, void* usr) {
-    if (argn == 2) {
+void wr_clearPixel( WRValue* stackTop, const int argn, WRContext* c )
+{
+	WRValue* argv = stackTop - argn;
+    if (argn == 2) 
+	{
         display.clearPixel(argv[0].asInt(), argv[1].asInt());
     }
 }
 
-void wr_setColor(WRContext* c, const WRValue* argv, const int argn, WRValue& retVal, void* usr) {
-	if (argn == 1) {
+void wr_setColor( WRValue* stackTop, const int argn, WRContext* c )
+{
+	WRValue* argv = stackTop - argn;
+	if (argn == 1) 
+	{
 		display.setColor(argv[0].asInt() ? WHITE : BLACK);
 	}
 }
 
-void wr_getColor(WRContext* c, const WRValue* argv, const int argn, WRValue& retVal, void* usr) {
-	if (argn == 0) {
-		wr_makeInt(&retVal, display.getColor() == WHITE);
+void wr_getColor( WRValue* stackTop, const int argn, WRContext* c )
+{
+	WRValue* argv = stackTop - argn;
+	if (argn == 0)
+	{
+		wr_makeInt(stackTop, display.getColor() == WHITE);
 	}
 }
 
 //------------------------------------------------------------------------------
-void wr_drawLine(WRContext* c, const WRValue* argv, const int argn, WRValue& retVal, void* usr) {
-    if (argn == 4) {
+void wr_drawLine( WRValue* stackTop, const int argn, WRContext* c )
+{
+	WRValue* argv = stackTop - argn;
+    if (argn == 4)
+	{
         display.drawLine(argv[0].asInt(), argv[1].asInt(), argv[2].asInt(), argv[3].asInt());
     }
 }
 
 //------------------------------------------------------------------------------
-void wr_drawRect(WRContext* c, const WRValue* argv, const int argn, WRValue& retVal, void* usr) {
-    if (argn == 4) {
+void wr_drawRect( WRValue* stackTop, const int argn, WRContext* c )
+{
+	WRValue* argv = stackTop - argn;
+    if (argn == 4)
+	{
         display.drawRect(argv[0].asInt(), argv[1].asInt(), argv[2].asInt(), argv[3].asInt());
     }
 }
 
 //------------------------------------------------------------------------------
-void wr_fillRect(WRContext* c, const WRValue* argv, const int argn, WRValue& retVal, void* usr) {
-    if (argn == 4) {
+void wr_fillRect( WRValue* stackTop, const int argn, WRContext* c )
+{
+	WRValue* argv = stackTop - argn;
+    if (argn == 4)
+	{
         display.fillRect(argv[0].asInt(), argv[1].asInt(), argv[2].asInt(), argv[3].asInt());
     }
 }
 
 //------------------------------------------------------------------------------
-void wr_drawCircle(WRContext* c, const WRValue* argv, const int argn, WRValue& retVal, void* usr) {
-    if (argn == 3) {
+void wr_drawCircle( WRValue* stackTop, const int argn, WRContext* c )
+{
+	WRValue* argv = stackTop - argn;
+    if (argn == 3)
+	{
         display.drawCircle(argv[0].asInt(), argv[1].asInt(), argv[2].asInt());
     }
 }
 
 //------------------------------------------------------------------------------
-void wr_fillCircle(WRContext* c, const WRValue* argv, const int argn, WRValue& retVal, void* usr) {
-    if (argn == 3) {
+void wr_fillCircle( WRValue* stackTop, const int argn, WRContext* c )
+{
+	WRValue* argv = stackTop - argn;
+    if (argn == 3)
+	{
         display.fillCircle(argv[0].asInt(), argv[1].asInt(), argv[2].asInt());
     }
 }
 
 //------------------------------------------------------------------------------
-void wr_drawTriangle(WRContext* c, const WRValue* argv, const int argn, WRValue& retVal, void* usr) {
-    if (argn == 6) {
+void wr_drawTriangle( WRValue* stackTop, const int argn, WRContext* c )
+{
+	WRValue* argv = stackTop - argn;
+    if (argn == 6)
+	{
         display.drawTriangle(argv[0].asInt(), argv[1].asInt(), argv[2].asInt(), argv[3].asInt(), argv[4].asInt(), argv[5].asInt());
     }
 }
 
 //------------------------------------------------------------------------------
-void wr_fillTriangle(WRContext* c, const WRValue* argv, const int argn, WRValue& retVal, void* usr) {
-    if (argn == 6) {
+void wr_fillTriangle( WRValue* stackTop, const int argn, WRContext* c )
+{
+	WRValue* argv = stackTop - argn;
+    if (argn == 6)
+	{
         display.fillTriangle(argv[0].asInt(), argv[1].asInt(), argv[2].asInt(), argv[3].asInt(), argv[4].asInt(), argv[5].asInt());
     }
 }
 
-void wr_drawString(WRContext* c, const WRValue* argv, const int argn, WRValue& retVal, void* usr) {
-    if (argn == 3) {
+void wr_drawString( WRValue* stackTop, const int argn, WRContext* c )
+{
+	WRValue* argv = stackTop - argn;
+    if (argn == 3)
+	{
 		char buffer[64];
-        wr_makeInt(&retVal, display.drawString(argv[0].asInt(), argv[1].asInt(), argv[2].asString(buffer, 64)));
+        wr_makeInt(stackTop, display.drawString(argv[0].asInt(), argv[1].asInt(), argv[2].asString(buffer, 64)));
     }
 }
 
-
-void wr_display(WRContext* c, const WRValue* argv, const int argn, WRValue& retVal, void* usr) {
-	if (argn == 0) {
+void wr_display( WRValue* stackTop, const int argn, WRContext* c )
+{
+	WRValue* argv = stackTop - argn;
+	if (argn == 0)
+	{
 		display.display();
 	}
 }
 
-void wr_clear(WRContext* c, const WRValue* argv, const int argn, WRValue& retVal, void* usr) {
-	if (argn == 0) {
+void wr_clear( WRValue* stackTop, const int argn, WRContext* c )
+{
+	WRValue* argv = stackTop - argn;
+	if (argn == 0)
+	{
 		display.clear();
 	}
 }
@@ -208,6 +265,26 @@ void print( WRContext* c, const WRValue* argv, const int argn, WRValue& retVal, 
 	}
 }
 
+void wr_atoi( WRContext* c, const WRValue* argv, const int argn, WRValue& retVal, void* usr )
+{
+	if( argn == 1)
+	{
+		char buffer[64];
+		wr_makeInt( &retVal, atoi( argv[0].asString(buffer, 64) ) );
+	}
+}
+
+void wr_atof( WRContext* c, const WRValue* argv, const int argn, WRValue& retVal, void* usr )
+{
+	if( argn == 1)
+	{
+		char buffer[64];
+		wr_makeFloat( &retVal, atof( argv[0].asString(buffer, 64) ) );
+	}
+}
+
+
+// wrench ch test.w test.h wrenchCode
 #include "test.h"
 
 WRState* w = wr_newState(); // create the state
@@ -218,57 +295,51 @@ bool redraw = true;
 
 void setup()
 {
+	WRValue bufferobj;
 	Serial.begin(115200);
-	
+	wr_loadSysLib(w);
 
 	wr_registerFunction( w, "print", print ); // bind a function
+	wr_registerFunction( w, "atoi", wr_atoi ); // bind a function
+	wr_registerFunction( w, "atof", wr_atof ); // bind a function
 
-	wr_registerFunction( w, "delay", ino_delay );
-	wr_registerFunction( w, "pinMode", ino_pinMode );
-	wr_registerFunction( w, "digitalWrite", ino_digitalWrite );
-	wr_registerFunction( w, "digitalRead", ino_digitalRead );
-
-	wr_registerFunction( w, "analogRead", ino_analogRead );
-	wr_registerFunction( w, "tone", ino_tone );
-
-	WRValue bufferobj;
+	wr_registerLibraryFunction( w, "ino::delay", ino_delay );
+	wr_registerLibraryFunction( w, "ino::pinMode", ino_pinMode );
+	wr_registerLibraryFunction( w, "ino::digitalWrite", ino_digitalWrite );
+	wr_registerLibraryFunction( w, "ino::digitalRead", ino_digitalRead );
+	wr_registerLibraryFunction( w, "ino::analogRead", ino_analogRead );
+	wr_registerLibraryFunction( w, "ino::tone", ino_tone );
 	wr_registerLibraryConstant( w, "ino::LOW", wr_makeInt(&bufferobj,LOW) );
 	wr_registerLibraryConstant( w, "ino::HIGH", wr_makeInt(&bufferobj,HIGH) );
 	wr_registerLibraryConstant( w, "ino::INPUT", wr_makeInt(&bufferobj,INPUT) );
 	wr_registerLibraryConstant( w, "ino::OUTPUT", wr_makeInt(&bufferobj,OUTPUT) );
 	wr_registerLibraryConstant( w, "ino::BUILTIN_LED", wr_makeInt(&bufferobj,BUILTIN_LED) );
-
-
 	wr_registerLibraryConstant( w, "ino::BTN_1", wr_makeInt(&bufferobj,BTN_1) );
 	wr_registerLibraryConstant( w, "ino::BTN_2", wr_makeInt(&bufferobj,BTN_2) );
 	wr_registerLibraryConstant( w, "ino::BTN_3", wr_makeInt(&bufferobj,BTN_3) );
 	wr_registerLibraryConstant( w, "ino::BTN_4", wr_makeInt(&bufferobj,BTN_4) );
 	wr_registerLibraryConstant( w, "ino::BTN_5", wr_makeInt(&bufferobj,BTN_5) );
-
 	wr_registerLibraryConstant( w, "ino::BUZZER", wr_makeInt(&bufferobj,BUZZER) );
 
-	wr_registerLibraryConstant( w, "ino::WHITE", wr_makeInt(&bufferobj,WHITE) );
-	wr_registerLibraryConstant( w, "ino::BLACK", wr_makeInt(&bufferobj,BLACK) );
-	
-	wr_registerFunction( w, "init", wr_init );
-	wr_registerFunction( w, "end", wr_end );
-	wr_registerFunction( w, "resetDisplay", wr_resetDisplay );
-	wr_registerFunction( w, "setPixel", wr_setPixel );
-	
-	wr_registerFunction( w, "clearPixel", wr_clearPixel );
-	wr_registerFunction( w, "setColor", wr_setColor );
-	wr_registerFunction( w, "getColor", wr_getColor );
-
-	wr_registerFunction( w, "drawLine", wr_drawLine );
-	wr_registerFunction( w, "drawRect", wr_drawRect );
-	wr_registerFunction( w, "fillRect", wr_fillRect );
-	wr_registerFunction( w, "drawCircle", wr_drawCircle );
-	wr_registerFunction( w, "fillCircle", wr_fillCircle );
-	wr_registerFunction( w, "drawTriangle", wr_drawTriangle );
-	wr_registerFunction( w, "fillTriangle", wr_fillTriangle );
-	wr_registerFunction( w, "drawString", wr_drawString );
-	wr_registerFunction( w, "display", wr_display );
-	wr_registerFunction( w, "clear", wr_clear );
+	wr_registerLibraryConstant( w, "oled::WHITE", wr_makeInt(&bufferobj,WHITE) );
+	wr_registerLibraryConstant( w, "oled::BLACK", wr_makeInt(&bufferobj,BLACK) );
+	wr_registerLibraryFunction( w, "oled::init", wr_init );
+	wr_registerLibraryFunction( w, "oled::end", wr_end );
+	wr_registerLibraryFunction( w, "oled::resetDisplay", wr_resetDisplay );
+	wr_registerLibraryFunction( w, "oled::setPixel", wr_setPixel );
+	wr_registerLibraryFunction( w, "oled::clearPixel", wr_clearPixel );
+	wr_registerLibraryFunction( w, "oled::setColor", wr_setColor );
+	wr_registerLibraryFunction( w, "oled::getColor", wr_getColor );
+	wr_registerLibraryFunction( w, "oled::drawLine", wr_drawLine );
+	wr_registerLibraryFunction( w, "oled::drawRect", wr_drawRect );
+	wr_registerLibraryFunction( w, "oled::fillRect", wr_fillRect );
+	wr_registerLibraryFunction( w, "oled::drawCircle", wr_drawCircle );
+	wr_registerLibraryFunction( w, "oled::fillCircle", wr_fillCircle );
+	wr_registerLibraryFunction( w, "oled::drawTriangle", wr_drawTriangle );
+	wr_registerLibraryFunction( w, "oled::fillTriangle", wr_fillTriangle );
+	wr_registerLibraryFunction( w, "oled::drawString", wr_drawString );
+	wr_registerLibraryFunction( w, "oled::display", wr_display );
+	wr_registerLibraryFunction( w, "oled::clear", wr_clear );
 	
 
 	//int err = wr_compile( wrenchCode_bytecode, strlen(wrenchCode), &outBytes, &outLen ); // compile it
@@ -282,5 +353,5 @@ void setup()
 void loop()
 {
 	wr_callFunction( _ctx, "loop",0, 0); // call the setup function
-	delay(100);
+	delay(50);
 }
