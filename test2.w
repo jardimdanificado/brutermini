@@ -30,3 +30,10 @@ print(a.b.c);
 
 
 strsplit("hello world", ' ');
+function aoba()
+{
+    return 0;
+}
+sys::importCompile("function aoba2(abc) {print(\"amoeba\");aoba();return 0; };");
+print("jose\n");
+aoba2();

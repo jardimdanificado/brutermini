@@ -24,22 +24,32 @@ var canvas[][] =
     {32,32,32,32,32,32},
     {32,32,32,32,32,32},
 };
+var tempstr;
+var x = 0;
+var y = 0;
+
+
+function buttonDown(button)
+{
+    return ino::digitalRead(button) == ino::HIGH;
+}
+
 
 function drawBoard()
 {
-    var tempstr = "a";
-    for (var i = 0; i < 16; i++)
+    tempstr = "a";
+    for (x = 0; x < 16; x++)
     {
-        for (var j = 0; j < 6; j++)
+        for (y = 0; y < 6; y++)
         {
-            if (cursor.x == i && cursor.y == j)
+            if (cursor.x == x && cursor.y == y)
             {
                 oled::setColor(oled::WHITE);
-                oled::fillRect(i * 8, j * 8, 8, 8);
+                oled::fillRect(x * 8, y * 8, 8, 8);
                 oled::setColor(oled::BLACK);
             }
-            tempstr[0] = canvas[i][j];
-            oled::drawString(i * 8, j * 8, tempstr);
+            tempstr[0] = canvas[x][y];
+            oled::drawString(x * 8, y * 8, tempstr);
             oled::setColor(oled::WHITE);
         }
     }
@@ -58,11 +68,11 @@ function setup()
 
 function move()
 {
-    if (ino::digitalRead(ino::BTN_1) == ino::HIGH)
+    if (buttonDown(ino::BTN_1))
     {
-        if (ino::digitalRead(ino::BTN_2) == ino::HIGH)
+        if (buttonDown(ino::BTN_2))
         {
-            if(ino::digitalRead(ino::BTN_4) == ino::HIGH)
+            if(buttonDown(ino::BTN_4))
             {
                 if (cursor.y > 0)
                     cursor.y = cursor.y - 1;
@@ -70,7 +80,7 @@ function move()
                     cursor.y = 5;
                 redraw = true;
             }
-            else if(ino::digitalRead(ino::BTN_5) == ino::HIGH)
+            else if(buttonDown(ino::BTN_5))
             {
                 if (cursor.y < 5)
                     cursor.y = cursor.y + 1;
@@ -79,7 +89,7 @@ function move()
                 redraw = true;
             }
         }
-        else if(ino::digitalRead(ino::BTN_4) == ino::HIGH)
+        else if(buttonDown(ino::BTN_4))
         {
             if (cursor.x > 0)
                 cursor.x = cursor.x - 1;
@@ -98,7 +108,7 @@ function move()
             }
             redraw = true;
         }
-        else if(ino::digitalRead(ino::BTN_5) == ino::HIGH)
+        else if(buttonDown(ino::BTN_5))
         {
             if (cursor.x < 15)
                 cursor.x = cursor.x + 1;
@@ -118,7 +128,7 @@ function move()
             redraw = true;
         }
     }
-    else if (ino::digitalRead(ino::BTN_5) == ino::HIGH)
+    else if (buttonDown(ino::BTN_5))
     {
         if (canvas[cursor.x][cursor.y] < 255)
             canvas[cursor.x][cursor.y]++;
@@ -126,7 +136,7 @@ function move()
             canvas[cursor.x][cursor.y] = 0;
         redraw = true;
     }
-    else if (ino::digitalRead(ino::BTN_4) == ino::HIGH)
+    else if (buttonDown(ino::BTN_4))
     {
         if (canvas[cursor.x][cursor.y] > 0)
             canvas[cursor.x][cursor.y]--;
